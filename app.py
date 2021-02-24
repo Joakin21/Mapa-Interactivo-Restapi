@@ -1,10 +1,17 @@
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 import csv
 
-app = Flask(__name__)
-CORS(app)
+app = Flask(__name__,
+        static_folder='../front-mapa-interactivo/dist/static',
+        template_folder='../front-mapa-interactivo/dist')
+
+#app = Flask(__name__)
+
+
+cors = CORS(app, resource = {r"/api/*": {"origins":"*"}} )
+#CORS(app)
 
 sucursales = {10:[], 11:[], 12:[], 13:[], 14:[], 15:[], 16:[]}
 
@@ -55,17 +62,19 @@ def leerCsvSucursales():
 leerCsvSucursales()
 
 
-
-
 @app.route('/sucursales/<int:sucursal>')
 def getSucursal(sucursal):
     #sucursales = leerCsvSucursales()
 
     return jsonify(sucursales[sucursal])
 
+#@app.route('/', defaults={'path':''})
+@app.route('/')
+def render_vue():
+    return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+    app.run(debug=True, port=7776)
 
 
 
